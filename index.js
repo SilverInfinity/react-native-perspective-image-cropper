@@ -219,7 +219,7 @@ class CustomCrop extends Component {
           <Image
             style={[s(this.props).image, { height: this.state.viewHeight }]}
             resizeMode="contain"
-            source={{ uri: `data:image/jpeg;base64,${this.state.image}` }}
+            source={{uri: this.state.image}}
           />
           <Svg
             height={this.state.viewHeight}
