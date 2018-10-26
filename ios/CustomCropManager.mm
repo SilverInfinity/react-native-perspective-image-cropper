@@ -22,14 +22,10 @@ RCT_EXPORT_METHOD(crop:(NSDictionary *)points imageURI:(NSString *)imageURI call
     CIImage *ciImage = [[CIImage alloc] initWithImage:image];
 
     NSMutableDictionary *rectangleCoordinates = [NSMutableDictionary new];
-    // CGPoint tl = CGPointMake([RCTConvert CGFloat:points[@"topLeft"][@"x"]], [self getCartesianPoint:[RCTConvert CGFloat:points[@"topLeft"][@"y"]] withHeight:image.size.height]);
-    CGPoint tl = [self getCartesianPoint2:points[@"topLeft"] withHeight: image.size.height];
-    CGPoint tr = [self getCartesianPoint2:points[@"topRight"] withHeight: image.size.height];
-    CGPoint bl = [self getCartesianPoint2:points[@"bottomLeft"] withHeight: image.size.height];
-    CGPoint br = [self getCartesianPoint2:points[@"bottomRight"] withHeight: image.size.height];
-    // CGPoint tr = CGPointMake([RCTConvert CGFloat:points[@"topRight"][@"x"]], [self getCartesianPoint:[RCTConvert CGFloat:points[@"topRight"][@"y"]] withHeight:image.size.height]);
-    // CGPoint bl = CGPointMake([RCTConvert CGFloat:points[@"bottomLeft"][@"x"]], [self getCartesianPoint:[RCTConvert CGFloat:points[@"bottomLeft"][@"y"]] withHeight:image.size.height]);
-    // CGPoint br = CGPointMake([RCTConvert CGFloat:points[@"bottomRight"][@"x"]], [self getCartesianPoint:[RCTConvert CGFloat:points[@"bottomRight"][@"y"]] withHeight:image.size.height]);
+    CGPoint tl = [self getCartesianPoint:points[@"topLeft"] withHeight: image.size.height];
+    CGPoint tr = [self getCartesianPoint:points[@"topRight"] withHeight: image.size.height];
+    CGPoint bl = [self getCartesianPoint:points[@"bottomLeft"] withHeight: image.size.height];
+    CGPoint br = [self getCartesianPoint:points[@"bottomRight"] withHeight: image.size.height];
 
     rectangleCoordinates[@"inputTopLeft"] = [CIVector vectorWithCGPoint:tl];
     rectangleCoordinates[@"inputTopRight"] = [CIVector vectorWithCGPoint:tr];
@@ -53,17 +49,8 @@ RCT_EXPORT_METHOD(crop:(NSDictionary *)points imageURI:(NSString *)imageURI call
 
     callback(@[[NSNull null], @{@"image": croppedFilePath}]);
 
-    // NSString *updatedCroppedFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"updated_cropped_img_%i.jpeg",(int)[NSDate date].timeIntervalSince1970]];
-    // [imageToEncode writeToFile:updatedCroppedFilePath atomically:YES];
-    // callback(@[[NSNull null], @{@"image": updatedCroppedFilePath}]);
-    // UIImage* convertedImage = [self UIImageFromCVMat:mat];
-    // NSData *imageToEncode = UIImageJPEGRepresentation(convertedImage, 0.8);
-    // callback(@[[NSNull null], @{@"image": [imageToEncode base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength]}]);
 }
-- (CGFloat)getCartesianPoint:(CGFloat)point withHeight:(CGFloat)height {
-    return height - point;
-}
-- (CGPoint)getCartesianPoint2:(NSDictionary *)point withHeight:(CGFloat)height {
+- (CGPoint)getCartesianPoint:(NSDictionary *)point withHeight:(CGFloat)height {
     return CGPointMake([RCTConvert CGFloat:point[@"x"]], height - [RCTConvert CGFloat:point[@"y"]]);
 }
 - (UIImage *)fixOrientation:(UIImage *)srcImg {
@@ -135,66 +122,5 @@ RCT_EXPORT_METHOD(crop:(NSDictionary *)points imageURI:(NSString *)imageURI call
     CGImageRelease(cgimg);
     return img;
 }
-
-
-// - (cv::Mat)cvMatFromUIImage:(UIImage *)image
-// {
-//     CGColorSpaceRef colorSpace = CGImageGetColorSpace(image.CGImage);
-//     CGFloat cols = image.size.width;
-//     CGFloat rows = image.size.height;
-    
-//     cv::Mat cvMat(rows, cols, CV_8UC4);
-    
-//     CGContextRef contextRef = CGBitmapContextCreate(cvMat.data,
-//                                                     cols,
-//                                                     rows,
-//                                                     8,
-//                                                     cvMat.step[0],
-//                                                     colorSpace,
-//                                                     kCGImageAlphaNoneSkipLast |
-//                                                     kCGBitmapByteOrderDefault);
-    
-//     CGContextDrawImage(contextRef, CGRectMake(0, 0, cols, rows), image.CGImage);
-//     CGContextRelease(contextRef);
-    
-//     return cvMat;
-// }
-
-
-// -(UIImage *)UIImageFromCVMat:(cv::Mat)cvMat
-// {
-//     NSData *data = [NSData dataWithBytes:cvMat.data length:cvMat.elemSize()*cvMat.total()];
-//     CGColorSpaceRef colorSpace;
-    
-//     if (cvMat.elemSize() == 1) {
-//         colorSpace = CGColorSpaceCreateDeviceGray();
-//     } else {
-//         colorSpace = CGColorSpaceCreateDeviceRGB();
-//     }
-    
-//     CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
-    
-//     CGImageRef imageRef = CGImageCreate(cvMat.cols,
-//                                         cvMat.rows,
-//                                         8,
-//                                         8 * cvMat.elemSize(),
-//                                         cvMat.step[0],
-//                                         colorSpace,
-//                                         kCGImageAlphaNone|kCGBitmapByteOrderDefault,
-//                                         provider,
-//                                         NULL,
-//                                         false,
-//                                         kCGRenderingIntentDefault
-//                                         );
-    
-    
-//     UIImage *finalImage = [UIImage imageWithCGImage:imageRef];
-//     CGImageRelease(imageRef);
-//     CGDataProviderRelease(provider);
-//     CGColorSpaceRelease(colorSpace);
-    
-//     return finalImage;
-// }
-
 
 @end
