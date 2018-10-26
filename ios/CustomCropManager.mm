@@ -32,10 +32,6 @@ RCT_EXPORT_METHOD(crop:(NSDictionary *)points imageURI:(NSString *)imageURI call
     rectangleCoordinates[@"inputBottomLeft"] = [CIVector vectorWithCGPoint:bl];
     rectangleCoordinates[@"inputBottomRight"] = [CIVector vectorWithCGPoint:br];
 
-
-    
-
-
     CIImage *enhancedImage = [ciImage imageByApplyingFilter:@"CIPerspectiveCorrection" withInputParameters:rectangleCoordinates];
 
     UIGraphicsBeginImageContext(CGSizeMake(enhancedImage.extent.size.width, enhancedImage.extent.size.height));
