@@ -6,10 +6,16 @@
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(crop:(NSDictionary *)points base64Image:(NSString *)base64Image callback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(crop:(NSDictionary *)points imageURI:(NSString *)imageURI callback:(RCTResponseSenderBlock)callback)
 {
-    NSData *imageData = [[NSData alloc] initWithBase64EncodedString:base64Image options:NSDataBase64DecodingIgnoreUnknownCharacters];
-    UIImage *image = [UIImage imageWithData:imageData];
+    UIImage *image = [UIImage imageWithContentsOfFile:imageURI];
+    // CIImage *ciImage = [[CIImage alloc] initWithImage:image];
+
+    // NSMutableDictionary *rectangleCoordinates = [NSMutableDictionary new];
+    // CGPoint tl = CGPointMake(points[@"topLeft"][@"x"], points[@"topLeft"][@"y"]);
+    // CGPoint tr = CGPointMake(points[@"topRight"][@"x"], points[@"topRight"][@"y"]);
+    // CGPoint bl = CGPointMake(points[@"bottomLeft"][@"x"], points[@"bottomLeft"][@"y"]);
+    // CGPoint br = CGPointMake(points[@"bottomRight"][@"x"], points[@"bottomRight"][@"y"]);
     cv::Mat mat = [self cvMatFromUIImage: image];
     
     cv::Point2f tl = cv::Point2f(
@@ -55,9 +61,13 @@ RCT_EXPORT_METHOD(crop:(NSDictionary *)points base64Image:(NSString *)base64Imag
     
     mat.convertTo(mat, CV_8UC4);
     
-    UIImage* convertedImage = [self UIImageFromCVMat:mat];
-    NSData *imageToEncode = UIImageJPEGRepresentation(convertedImage, 0.8);
-    callback(@[[NSNull null], @{@"image": [imageToEncode base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength]}]);
+
+    NSString *updatedCroppedFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"updated_cropped_img_%i.jpeg",(int)[NSDate date].timeIntervalSince1970]];
+    [imageToEncode writeToFile:updatedCroppedFilePath atomically:YES];
+    callback(@[[NSNull null], @{@"image": updatedCroppedFilePath}]);
+    // UIImage* convertedImage = [self UIImageFromCVMat:mat];
+    // NSData *imageToEncode = UIImageJPEGRepresentation(convertedImage, 0.8);
+    // callback(@[[NSNull null], @{@"image": [imageToEncode base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength]}]);
 }
 
 
