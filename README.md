@@ -4,7 +4,7 @@ A component that allows you to perform custom image crop and perspective correct
 
 ![Demo image](https://s3-eu-west-1.amazonaws.com/michaelvilleneuve/demo-crop.gif)
 
-\*note: this module assumes that the image taken should be in portrait mode, and will adjust it to be such. I have not tested how it handles landscape images.
+\*note: I've modified this from the original to use the native iOS library CoreGraphics rather than openCV. This module assumes that the image taken should be in portrait mode, and will adjust it to be such. I have not tested how it handles landscape images.
 
 ##### Designed to work with React Native Document Scanner
 
